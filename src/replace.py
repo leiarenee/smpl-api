@@ -42,7 +42,7 @@ def replace_function(keyword:str) -> Dict:
   # Check if keyword exists
   except KeyError as err:
     message = f'Keyword "{keyword}" does not exist.'
-    lib.error_handling(message, exit=False)
+    lib.error_handling(message, exit=not interactive)
     return { 'error' : message }
   else:
     return { 'result' : result}
@@ -50,6 +50,7 @@ def replace_function(keyword:str) -> Dict:
 # Main routine to test the program in command line
 if __name__ == '__main__':
   keyword = ''
+  interactive = True
   logger = lib.logging
   while keyword != 'q':
     keyword = input('Please Enter Keywod (q for exit) : ')
