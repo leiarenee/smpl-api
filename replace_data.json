@@ -1,7 +1,7 @@
 {
-  "abn" : "ABN AMRO",
-  "ing" : "ING Bank",
-  "rabo" : "Rabobank",
-  "triodos" : "Triodos Bank",
-  "volksbank" : "de Volksbank"
+  "ABN" : "ABN Amro",
+  "ING" : "ING Bank",
+  "Rabo" : "Rabobank",
+  "Triodos" : "Triodos Bank",
+  "Volksbank" : "de Volksbank"
 }

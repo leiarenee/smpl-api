@@ -27,6 +27,8 @@ def safe_run(func=None, **dkwargs):
   if 'log_params' in dkwargs and not log_params['full_path_name']:
     log_params = dkwargs['log_params']
     configure_logging(log_params)
+  if 'debug_mode' in dkwargs:
+    debug_mode = dkwargs['debug_mode']
 
   @wraps(func)
   def wrapper(*args, **kwargs):
@@ -80,7 +82,8 @@ def configure_logging(log_params_input:Dict=None) -> None:
   log_params['full_path_name'] = f'{log_params["folder"]}/{log_params["base_file_name"]}'
   log_file_handling(log_params=log_params)
   logging.basicConfig(format=log_params['format'], filename=log_params['full_path_name'] , encoding=log_params['encoding'], level=log_params['level'] )
-  logging.debug('Program initialized.')
+  logging.debug(f'Logging initialized with following parameters: {log_params}')
+  return logging
 
 def log_file_handling(log_params:Dict) -> None:
   # Check if log folder exists
