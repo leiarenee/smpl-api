@@ -8,7 +8,7 @@ import sys
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 from flask_httpauth import HTTPBasicAuth
-from replace import replace_function
+import replace
 
 def handleError(err):
     logging.error(err)
@@ -23,7 +23,7 @@ CORS(app)
 
 #Normally, is stored encrypted in database
 userStore = {
-    "replace": "1234"
+    "replace": "replace" # cmVwbGFjZTpyZXBsYWNl
 }
 
 #Verify username and password
@@ -41,7 +41,7 @@ def replaceapi():
   reqArgs = request.args.getlist("key")
   data = json.loads(request.data)
   
-  result = replace_function(data, reqArgs)
+  result = replace.event_handler(replace.replace_function, data['text'])
   print(result)
   #pdb.set_trace()
   return jsonify(result)

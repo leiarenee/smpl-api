@@ -20,7 +20,6 @@ log_params = {
   'clean':{'remove':True, 'days':0,'seconds':0, 'quantity':10}
 }
 
-#@lib.safe_run(log_params=log_params, debug_mode=debug_mode)
 def regexp_replace(search, replace, text):
   result = text
   pattern = '(^|[^\\\p{L}])('
@@ -31,7 +30,6 @@ def regexp_replace(search, replace, text):
   result = re.sub(pattern, r'\1' + f'{replace}' + r'\3' , result)
   return result
 
-#@lib.safe_run(log_params=log_params, debug_mode=debug_mode)
 def replace_function(text:str) -> Dict: 
   """Replaces given keyword with the corresponding value within the database
 
