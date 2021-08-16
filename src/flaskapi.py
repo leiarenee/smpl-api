@@ -49,4 +49,4 @@ def replaceapi():
 
 if __name__ == '__main__':
   os.environ['FLASK_ENV']='development'
-  app.run(host='localhost', port=2000, debug=True)
+  app.run(host='0.0.0.0', port=8000, debug=True)
