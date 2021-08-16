@@ -1,0 +1,11 @@
+.vscode
+doc*
+log*
+test
+__pycache__
+.git*
+*.md
+LICENSE
+venv
+Dockerfile
+

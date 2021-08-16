@@ -1,43 +1,28 @@
-# Base image Amazon Linux2
-FROM public.ecr.aws/amazonlinux/amazonlinux
+# STAGE 1: Build Stage - Build and Install python3
+FROM public.ecr.aws/amazonlinux/amazonlinux AS python-builder
+RUN yum update -y && yum groupinstall "Development Tools" -y
+RUN yum install wget openssl-devel libffi-devel bzip2-devel -y
+ARG PYTHON_VERSION
+ARG PYTHON_COMMAND
+RUN wget https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tgz \
+ && tar xvf Python-${PYTHON_VERSION}.tgz
+RUN cd Python-${PYTHON_VERSION} && ./configure --enable-optimizations && make altinstall
 
-# Install python3
-RUN yum update -y
-RUN yum install -y python3
+# Install Python packages
+WORKDIR /app
+ADD requirements.txt .
+RUN pip$PYTHON_COMMAND install -r requirements.txt
 
-# Install Virtualenv
-RUN pip3 install virtualenv
-
-# Install Git
-RUN yum install -y git
-
-RUN pwd
-RUN ls -la
-
-# Clone Repository
-RUN mkdir app && cd app && git clone https://github.com/leiarenee/tmnl-app.git
-
-# Set Working Directory
-WORKDIR /app/tmnl-app
-
-# Activate virtualenv
-RUN virtualenv -p python3 venv
-RUN source venv/bin/activate
-
-# List currentdir
-RUN pwd && ls -la
-
-# Install python packages
-RUN pip3 install -r requirements.txt
-
-# Setup environment variables
-ENV PYTHONPATH=src:test
+# Setup environment 
+EXPOSE 8000
+ENV PYTHONPATH=src
+WORKDIR /app
+ADD . .
 
 # Set Entry Point command
-ENTRYPOINT [ "python3" ]
-
+ENTRYPOINT [ "./entrypoint.sh" ]
 # Set Arguments
-CMD [ "-m", "flaskapi" ]
+CMD [ "python3.9", "-m", "flaskapi" ]
 
 
 
