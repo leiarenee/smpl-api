@@ -20,7 +20,7 @@ WORKDIR /app
 ADD . .
 
 # Set Entry Point command
-ENTRYPOINT [ "./entrypoint.sh" ]
+ENTRYPOINT [ "docker/entrypoint.sh" ]
 # Set Arguments
 CMD [ "python3.9", "-m", "flaskapi" ]
 
