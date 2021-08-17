@@ -13,7 +13,7 @@ WHITE=`tput -T $TERM setaf 7`
 
 # If false set it empty
 [[ "$USE_REMOTE_DOCKER_CACHE" == "false" ]] && USE_REMOTE_DOCKER_CACHE=""
-[[ "$SKIP_UPLOAD_CACHE" == "false" ]] && SKIP_UPLOAD_CACHE=""
+[[ "$UPLOAD_IMAGE" == "false" ]] && UPLOAD_IMAGE=""
 [[ "$SKIP_DOWNLOAD_CACHE" == "false" ]] && SKIP_DOWNLOAD_CACHE=""
 [[ "$INVALIDATE_REMOTE_CACHE" == "false" ]] && INVALIDATE_REMOTE_CACHE=""
 [[ "$ENFORCE_NO_CACHE" == "false" ]] && ENFORCE_NO_CACHE=""
@@ -160,7 +160,7 @@ then
 fi
 
 # Upload image
-if [[ -z $SKIP_UPLOAD_CACHE ]]
+if [[ ! -z $UPLOAD_IMAGE ]]
 then
   # Push runtime image to remote repository.
   echo
