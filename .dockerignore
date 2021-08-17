@@ -1,5 +1,6 @@
 .vscode
-doc*
+docker
+docs
 log*
 test
 __pycache__
