@@ -16,14 +16,13 @@ export DOCKER_FILE=./Dockerfile
 export FETCH_AWS_SECRETS=false
 export FETCH_REPO_VERSION=false
 export ECR_LOGIN=false
+export ECR_STATIC_LOGIN=false
+export AWS_ECR_ACCOUNT_ID=
 
 # Project ARGS
 export PYTHON_VERSION=3.9.5
 export PYTHON_COMMAND=3.9
 
-
-export BUILD_CONTEXT=../..
-cd $BUILD_CONTEXT
 ./docker/codebuild/codebuild.sh
 
 # Clean up

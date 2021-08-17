@@ -21,6 +21,7 @@ WHITE=`tput -T $TERM setaf 7`
 [[ "$FETCH_REPO_VERSION" == "false" ]] && FETCH_REPO_VERSION=""
 [[ "$CHANGE_BRANCH" == "false" ]] && CHANGE_BRANCH=""
 [[ "$ECR_LOGIN" == "false" ]] && ECR_LOGIN=""
+[[ "$ECR_STATIC_LOGIN" == "false" ]] && ECR_STATIC_LOGIN=""
 
 
 # Checkout to branch
@@ -63,7 +64,7 @@ function ecr_login {
 function ecr_static_account_login {
   echo -e "${GREEN}- Logging into ECR Static account ${NC}"
   echo
-  aws ecr get-login-password | docker login $AWS_ECR_ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com -u AWS --password-stdin
+  aws ecr get-login-password | docker login $AWS_ECR_STATIC_ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com -u AWS --password-stdin
   echo
 }
 
@@ -136,7 +137,10 @@ else
 fi
 
 # Login to static account
-ecr_static_account_login
+if [ ! -z $ECR_STATIC_LOGIN ]
+then
+  ecr_static_account_login
+fi
 
 echo -e "${GREEN}- Building Image ${NC}"
 echo
@@ -149,11 +153,14 @@ docker build . \
   --tag $IMAGE_REPO_NAME:latest \
   $cache_string 
 
-# Login to original account
-ecr_login
+# Login to ECR
+if [ ! -z $ECR_LOGIN ]
+then
+  ecr_login
+fi
 
 # Upload image
-if [[ ! -z USE_REMOTE_DOCKER_CACHE && -z $SKIP_UPLOAD_CACHE ]]
+if [[ -z $SKIP_UPLOAD_CACHE ]]
 then
   # Push runtime image to remote repository.
   echo
