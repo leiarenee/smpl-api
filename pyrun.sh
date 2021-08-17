@@ -13,6 +13,7 @@
 # pyrun_python_module=<module name>
 # pyrun_default_module_args=<module args>
 # pyrun_test_wildcard=<Ex: test_*.py>
+# pyrun_server_module=<server module>
 # ----------------------------------------
 
 # Stop on error
@@ -24,14 +25,13 @@ env_file=".env"
 # Function for showing usage
 function show_usage(){
   cat << EOF
-  Script for easy running and testing '$python_module'
+  Script for easy running and testing '$pyrun_python_module' module
     Usage :
     - Install Virtual environment     $0 install
     - Run Tests:                      $0 test
-    - Run All:                        $0 all
+    - Run Server:                     $0 server
+    - Run Applicaiton                 $0 app
     - Show Usage:                     $0 help  
-    - Run Programme with parameters:  $0 <parameter list>
-    - Help for the $python_module:    $0 -h"
   
   To activate virtual environment for command line shell: (Not required for running '$0')
   - for 'bash, sh, ksh, csh, zsh...'
@@ -41,8 +41,6 @@ function show_usage(){
   
   To deactivate virtual environment:
     'deactivate'
-  
-  
 EOF
   exit 0
 }
@@ -90,21 +88,19 @@ function run_tests(){
 }
 
 # Function for calling python script with arguments
-function run_custom(){
+function run_application(){
+  echo
+  echo "Running $pyrun_python_module module "
+  echo
  python3 -m $pyrun_python_module $@
 }
 
 # Function for running tests and python script at the same command.
-function run_all(){
+function run_server(){
   echo
-  echo "Running Tests in $pyrun_test_dir folder."
+  echo "Running $pyrun_server_module Server "
   echo
-  run_tests
-  echo "----------------------------------------------------------------------"
-  echo
-  echo "Running '$pyrun_python_module' Script with arguments '$pyrun_default_module_args'"
-  echo
-  run_custom $pyrun_default_module_args
+  python3 -m $pyrun_server_module $@
 }
 
 function install(){
@@ -121,7 +117,7 @@ function install(){
 
 import_env_vars
 
-if [ "$1" != "install" ]
+if [ "$1" != "install"  ] && [ "$1" != "help" ]
 then
   activate_virtual_env
 fi
@@ -132,12 +128,14 @@ case $1 in
   show_usage;;
   "test")
   run_tests;;
-  "all")
-  run_all;;
+  "server")
+  run_server;;
+  "app")
+  run_application;;
   "install")
   install;;
   *)
-  run_custom $@;;
+  run_application $@;;
 esac
 
 

@@ -19,6 +19,18 @@ class Test_Replace(unittest.TestCase):
     data = self.load_json(self.test_data_file)
     self.assertEqual(data['ABN'], 'ABN Amro')
     self.assertEqual(data['ING'], 'ING Bank')
+  
+  def test_several_replacements(self):  
+    self .assertEqual(replace.event_handler(replace.replace_function, text='ABN')['result'], 'ABN Amro')
+    self .assertEqual(replace.event_handler(replace.replace_function, text='aBn')['result'], 'ABN Amro')
+    self .assertEqual(replace.event_handler(replace.replace_function, text='abn.')['result'], 'ABN Amro.')
+    self .assertEqual(replace.event_handler(replace.replace_function, text='/abn')['result'], '/ABN Amro')
+
+  def test_reverse_replacement(self):
+    self .assertEqual(replace.event_handler(replace.replace_function, text='abn amro')['result'], 'ABN Amro')
+
+  def test_neglect_inwords(self):
+    self .assertEqual(replace.event_handler(replace.replace_function, text='ABNORMAL')['result'], 'ABNORMAL')
 
   def test_event_handler(self):
     test_input_string = self.load_text(self.test_input_file)

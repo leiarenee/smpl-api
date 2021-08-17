@@ -1,3 +1,1 @@
-ABN Amro is one of the largest banks in Netherlands. ABN Amro's annual budget is blah blah.
-ING Bank is a global organization. ING Bank does good. ING Bank is in fortune 500 companies. Is it :-) ?
-de Volksbank is bigger than Triodos Bank. Rabobank is yet another one.
+ABN Amro is one of the largest banks in Netherlands. ABN Amro's annual budget is ... ING Bank is a global organization. ING Bank is in fortune 500 companies. de Volksbank , Triodos Bank and Rabobank are anothers as ABN Amro

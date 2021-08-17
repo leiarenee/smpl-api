@@ -22,11 +22,11 @@ log_params = {
 
 def regexp_replace(search, replace, text):
   result = text
-  pattern = '(^|[^\\\p{L}])('
-  # sample r'(^|[^\p{L}])([Aa][Bb][Nn])([^\p{L}]|$)'
+  pattern = '(^|\W)('
+  # (^|\W)([Aa][Bb][Cc])(\W|$)
   for char in search:
     pattern = pattern + f'[{char.upper()}{char.lower()}]'
-  pattern += ')([^\\\p{L}]|$)'
+  pattern += ')(\W|$)'
   result = re.sub(pattern, r'\1' + f'{replace}' + r'\3' , result)
   return result
 
