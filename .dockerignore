@@ -2,7 +2,6 @@
 docker
 docs
 log*
-test
 __pycache__
 .git*
 *.md

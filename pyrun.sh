@@ -76,7 +76,7 @@ function run_unit_tests(){
   do
     echo Running $test
     echo
-    python3 -m unittest -v $test
+    $pyrun_python_command -m unittest -v $test
     echo
   done
   IFS=$' '
@@ -106,7 +106,7 @@ function run_application(){
   echo
   echo "Running $pyrun_python_module module "
   echo
- python3 -m $pyrun_python_module $@
+ $pyrun_python_command -m $pyrun_python_module $@
 }
 
 # Function for running tests and python script at the same command.
@@ -114,7 +114,7 @@ function run_server(){
   echo
   echo "Running $pyrun_server_module Server "
   echo
-  python3 -m $pyrun_server_module $@
+  $pyrun_python_command -m $pyrun_server_module $@
 }
 
 function install(){
@@ -124,14 +124,14 @@ function install(){
   echo "Activating virtual environment"
   source "$pyrun_venv_dir/bin/activate"
   echo "Installing required packages"
-  python3 -m pip install -r requirements.txt
+  $pyrun_python_command -m pip install -r requirements.txt
   
 }
 # Main Routine
 
 import_env_vars
 
-if [ "$1" != "install"  ] && [ "$1" != "help" ]
+if [ "$1" != "install"  ] && [ "$1" != "help" ] && [ "$1" != "docker-test" ]
 then
   activate_virtual_env
 fi
@@ -140,7 +140,7 @@ fi
 case $1 in
   "help")
   show_usage;;
-  "test")
+  "test"|"docker-test")
   run_tests;;
   "unit")
   run_unit_tests;;

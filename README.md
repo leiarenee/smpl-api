@@ -228,6 +228,18 @@ curl "http://0.0.0.0:8000/api/replace" -X POST -d '{"text" : "The analysts of AB
 {"result":"The analysts of ABN Amro did a great job!"}
 ```
 
+### About Flask API ###
+
+Api endpoint : `/api/replace`
+Request Method: POST
+
+HTTP Basic Authentication is used in Flask Api server. Username and Password is `replace` and `replace` respectively. The base64 Encoding is `cmVwbGFjZTpyZXBsYWNl`.
+
+Minimum Following headers should be sent in order to get a correct response:
+
+* Content-Type: application/json
+* Authorization: Basic cmVwbGFjZTpyZXBsYWNl
+
 ## Logging ##
 
 Log files are created under `log` folder with timestamp as name.
@@ -344,39 +356,156 @@ PORT=8000
 
 `pyrun.sh` is also used to install virtual environment in first use and run the python module activating virtual environment inside the script. Hence there is no need to activate the virtual environment if explicitly if the python module is run by `pyrun.sh`
 
+## DOCKER ##
+
+The application is ready to be installed as docker container. [Amazonlinux](https://gallery.ecr.aws/amazonlinux/amazonlinux) is used as a base image to keep stability and reliability. Since Docker Company puts quota downloading public images, using Docker hub public images from [AWS Codebuild](https://aws.amazon.com/codebuild/) is not reliable.
+
+### Build Docker Image ###
+
+Run:
+
+```sh
+./build-docker.sh
+```
+
+#### Manual Build Command ####
+
+```sh
+docker build . -t tmnl-app --build-arg PYTHON_VERSION=3.9.5 --build-arg PYTHON_COMMAND=3.9
+```
+
+__Not__: Since `Python3.9` is not available as a yum package, source files are fetched from python.org ftp site, extracted, compiled and installed into container image during build time. Python version is passed into Docker Builder as an argument so that it can be changed easily from outside without changing docker file.
+
+```docker
+# STAGE 1: Build Stage - Build and Install python3
+FROM public.ecr.aws/amazonlinux/amazonlinux AS python-builder
+RUN yum update -y && yum groupinstall "Development Tools" -y
+RUN yum install wget openssl-devel libffi-devel bzip2-devel -y
+ARG PYTHON_VERSION
+ARG PYTHON_COMMAND
+RUN wget https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tgz \
+ && tar xvf Python-${PYTHON_VERSION}.tgz
+RUN cd Python-${PYTHON_VERSION} && ./configure --enable-optimizations && make altinstall
+
+# Install Python packages
+WORKDIR /app
+ADD requirements.txt .
+RUN pip$PYTHON_COMMAND install -r requirements.txt
+
+# Setup environment 
+EXPOSE 8000
+ENV PYTHONPATH=src
+WORKDIR /app
+ADD . .
+
+# Set Entry Point command
+ENTRYPOINT [ "./entrypoint.sh" ]
+# Set Arguments
+CMD [ "python3.9", "-m", "flaskapi" ]
+```
+
+`entrypoint.sh` is used as Docker entry point to be able to run extra commands and prepare environment before running server.
+
+### Running Docker Container ###
+
+Run:
+
+```sh
+./run-docker.sh
+```
+
+### Manual Run for docker container ###
+
+Run:
+
+```sh
+docker run -p 8000:8000 tmnl-api
+```
+
+### Running Tests in Docker Container ###
+
+Run:
+
+```sh
+./run-docker.sh test
+```
+
+## AWS Codebuild for remote docker builds ##
+
+[AWS Codebuild](https://aws.amazon.com/codebuild/) Service is used to build docker image remotely and deploy into [AWS Elastic Container Registry](https://aws.amazon.com/ecr/). `codebuild.sh` bash script file is executed codebuild machine. The settings are passed from [TMNL-Live](https://github.com/leiarenee/tmnl-live) github repository which is used by [Terragrunt](https://terragrunt.gruntwork.io/) and [Terraform](https://www.terraform.io/) to deploy infrastructure. See [TMNL-Live](https://github.com/leiarenee/tmnl-live) for more details.
+
+### Local test for codebuild ###
+
+`local-build.sh` under `docker/codebuild` folder is used to test `codebuild.sh` file locally.
+
+Run:
+
+```sh
+docker/codebuild/local-build.sh
+```
+
+Following parameters are passed to `codebuild.sh` :
+
+```sh
+export APP_NAME=flask-api
+export AWS_ACCOUNT_ID=$(aws sts get-caller-identity | jq .Account -r)
+export IMAGE_REPO_NAME=$APP_NAME
+export SOURCE_BRANCH=$(git branch | grep "*" | sed s/\*\ //g)
+export DOCKER_FILE=./Dockerfile
+
+export USE_REMOTE_DOCKER_CACHE=false 
+export UPLOAD_IMAGE=false
+export FETCH_AWS_SECRETS=false
+export FETCH_REPO_VERSION=false
+export ECR_LOGIN=$UPLOAD_IMAGE
+export ECR_STATIC_LOGIN=false
+export AWS_ECR_ACCOUNT_ID=
+
+# Project ARGS
+export PYTHON_VERSION=3.9.5
+export PYTHON_COMMAND=3.9
+```
+
+__Note__: `aws` AWS Client application version > 2.0 and `jq` should be installed in order to run local-build.sh properly. AWS Credentials should be configured to upload resulting image. By default upload is disabled.
+
+```sh
+# Login to Elastic Container Registry
+function ecr_login {
+  echo -e "${GREEN}- Logging into ECR ${NC}"
+  echo
+  aws ecr get-login-password | docker login $ECR_URL -u AWS --password-stdin
+  echo
+}
+```
+
+### Remote Caching for Codebuild ###
+
+While AWS Codebuild claims that it supports layer caching for docker images, it doesn't work smoothly most of the time. In order to overcome this problem remote caching is used. Latest image file from ECR is downloaded and used as a local cache for building docker image remotely. This mechanism makes build times multiple times faster than non cached builds.
+
+### Secrets Handling for Docker builds ###
+
+Secrets such as we use to access private repositories are stored in AWS Secrets service and fetched by `codebuild.sh` during build process.
+
+```sh
+# Fetch Secrets from secret manager
+function fetch_secret {
+  echo -e "${GREEN}- Feching Secret $1 from secret manager ${NC}";echo
+  secret_value=$(aws secretsmanager get-secret-value --secret-id $2)
+  echo "Successfully fetched $1";
+  export $1=$(echo $secret_value | jq .SecretString | sed s/[\\]//g  | sed s/^\"//g | sed s/\}\"/\}/g )
+}
+```
+
 ### Future Releases ###
 
 * System Tests
 * Exception tests
-* Get log parameters from configuaration file
-* Cloudwatch logging
+* Get log parameters from configuration file
+* `AWS Cloudwatch` logging
 
-### Git History ###
-
-`git log --pretty=oneline --abbrev-commit`
-
-```log
-d48c613 (HEAD -> main, tag: v1.1.2) update readme
-14c94aa (tag: v1.1.1, origin/flask-test, flask-test) flask integration tests ok
-a8f1766 update readme
-fc10ec1 bug fix at regex
-12543e6 bug fix
-30c3a5f update codebuild.sh
-2443b79 update codebuild.sh
-1e717c0 codebuild added
-7eac419 docker ready
-22b599f (tag: v1.0.0) change port and host to 0.0.0.0:8000
-971594f unit tests
-45f5e4b flask api running
-b53c6f6 change from static to dynamic decorator
-b0267a1 minor fix
-0cee9fd replace function complete
-6d352dc Initial commit
-```
+---
 
 ### Contact Information ###
-
-This program is designed and written by [Leia Renée](https://www.linkedin.com/in/leia-renee/) for the purpose of job interview by [TMNL](https://www.tmnl.nl/) in August 2021.
 
 Leia Renée
 
