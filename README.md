@@ -83,20 +83,37 @@ To deactivate virtual environment:
 ### Directory Structure ###
 
 * `src` : Python source files
-  * `nginx_convert.py` Main `Python3` source module.
+  * `replace.py` Main `Python3` source module.
+  * `flaskapi.py` Flask backend web werver.
+  * `library.py` Python module for helper functions, such as log handling, error handling, decorators.
+* `test`: Folder for containing python unit, integration and system tests.
+  * `test_replace.py` Python unit test file for `replace.py`
+  * `files`: Folder including text and json files for testing purposes.
+    * `test_input.txt` Sample input text file consumed by unit tests
+    * `test_output.txt` Output text file used by unit test to compare results.
+    * `test_replace_data.json` Json file used to extract sample data to be used in unit tests.
 * `doc` : Extra documentation
-  * `Assignment.md` Assignment text supplied by [Mendix](https://www.mendix.com/).
+  * `Assignment.md` md version of Assignment text.
+  * `Cloud Engineer Assignment TMNL August 21.pdf` Assignment text supplied by [TMNL](https://www.tmnl.nl/).
 * `log` : log files
 * `venv` : virtual environment (This directory is created on first use by running `./pyrun.sh install`)
   * `bin` Virtual environment binaries
   * `lib` Python binaries and packages
 * `root` :
   * `pyrun.sh` Helper bash script to run tests, install venv and run the python module.
-  * `input.yaml` Input source yaml file supplied by [Mendix](https://www.mendix.com/).
-  * `nginx_conf.yaml` Configuration file to store python module defaults.
-  * `nginx_conf` Sample Nginx Configuration file supplied by [Mendix](https://www.mendix.com/).
+  * `build-docker.sh` Bash script to build docker file locally.
+  * `run-docker.sh` Bash script to run container locally.
+  * `entrypoint.sh` Bash script used by Docker as entrypoint.
   * `README.md` This file
-  * `requirements.txt` Used by pip to install required python packages. 
+  * `requirements.txt` Used by pip to install required python packages.
+  * `replace_data.json` Json file used to extract sample data from.
+  * `.env` Environment varibles file
+  * `gitignore` & `dockerignore` consumed by git and docker respectively to specify ignored files and folders.
+  * `Dockerfile` Docker file used to build container image.
+* `docker` Folder for extra docker files
+  * `codebuild` Folder including AWS Codebuild files.
+    * `codebuild.sh` Bash script to build to docker file remotly in AWS Codebuild.
+    * `localbuild.sh` Bash script to test `codebuild.sh` locally.
 
 ## Run Tests ##
 
@@ -106,41 +123,20 @@ __Output:__
 
 ```sh
 Following tests are found in test with pattern test_*.py
-test_nginx_conf test_nginx_out_conf test_parse_arguments
+test_replace
 
-Running test_nginx_conf
+Running test_replace
 
-test_create_file (test_nginx_conf.Test_Nginx_Configuration) ... Configuration file test/files/out/auto-test-out.conf created.
-ok
-test_load_input_file (test_nginx_conf.Test_Nginx_Configuration) ... ok
-test_processed_input_data (test_nginx_conf.Test_Nginx_Configuration) ... ok
-
-----------------------------------------------------------------------
-Ran 3 tests in 0.045s
-
-OK
-
-Running test_nginx_out_conf
-
-test_load_defaults (test_nginx_out_conf.Test_Nginx_Out_Conf) ... ok
-test_output_file (test_nginx_out_conf.Test_Nginx_Out_Conf) ... ok
-test_processed_inputs (test_nginx_out_conf.Test_Nginx_Out_Conf) ... ok
+test_event_handler (test_replace.Test_Replace) ... ok
+test_load_data_file (test_replace.Test_Replace) ... ok
+test_neglect_inwords (test_replace.Test_Replace) ... ok
+test_reverse_replacement (test_replace.Test_Replace) ... ok
+test_several_replacements (test_replace.Test_Replace) ... ok
 
 ----------------------------------------------------------------------
-Ran 3 tests in 0.033s
-
-OK
-
-Running test_parse_arguments
-
-test_input_file_only (test_parse_arguments.Test_Nginx_Configuration) ... ok
-test_print_app (test_parse_arguments.Test_Nginx_Configuration) ... ok
-test_print_catchall (test_parse_arguments.Test_Nginx_Configuration) ... ok
-test_print_ipfilters (test_parse_arguments.Test_Nginx_Configuration) ... ok
-
-----------------------------------------------------------------------
-Ran 4 tests in 0.052s
+Ran 5 tests in 0.013s
 
 OK
 
 ```
+

@@ -11,7 +11,7 @@ logger = None
 
 # Default log parameters
 log_params = {
-  'folder' : 'logs',
+  'folder' : 'log',
   'base_file_name' : 'pyapp.log',
   'level':lib.logging.DEBUG,
   'format':'%(asctime)s:%(levelname)s:%(message)s',
@@ -90,7 +90,7 @@ if __name__ == '__main__':
     if keyword != 'q':
       result = event_handler(replace_function, keyword)
       if 'result' in result:
-        print(result)
+        print(result['result'])
     else:
       print('Exiting with "q" command.')
       
