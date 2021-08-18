@@ -54,6 +54,8 @@ function activate_virtual_env(){
     echo "Virtual environment is not installed. Run '$0 install' command first."
     exit 0
   else
+    echo Activating Virtual Environment
+    echo $pyrun_venv_dir
     source $pyrun_venv_dir/bin/activate
   fi
   
@@ -118,7 +120,7 @@ function run_server(){
 function install(){
   echo
   echo "Installing virtual environment binaries into $pyrun_venv_dir with Python version $pyrun_venv_python_version"
-  virtualenv -p $pyrun_venv_python_version $pyrun_venv_dir
+  $pyrun_python_command -m virtualenv -p $pyrun_venv_python_version $pyrun_venv_dir
   echo "Activating virtual environment"
   source "$pyrun_venv_dir/bin/activate"
   echo "Installing required packages"

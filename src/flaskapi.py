@@ -12,6 +12,7 @@ from flask_httpauth import HTTPBasicAuth
 import replace
 import library as lib
 from http import HTTPStatus
+import dotenv
 
 # Default log parameters
 log_params = {
@@ -96,6 +97,10 @@ def create_app(test_config=None):
 
 
 if __name__ == '__main__':
+  env_file = '.env'
+  HOST = dotenv.get_key(env_file, 'HOST')
+  PORT = dotenv.get_key(env_file, 'PORT')
+  FLASK_DEBUG = dotenv.get_key(env_file, 'FLASK_DEBUG')
   app = create_app()
-  os.environ['FLASK_ENV']='development'
-  app.run(host='0.0.0.0', port=8000, debug=True)
+  print (f'Server listens on {HOST}:{PORT}')
+  app.run(host=HOST, port=PORT, debug=FLASK_DEBUG)
