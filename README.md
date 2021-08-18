@@ -351,6 +351,29 @@ PORT=8000
 * Get log parameters from configuaration file
 * Cloudwatch logging
 
+### Git History ###
+
+`git log --pretty=oneline --abbrev-commit`
+
+```log
+d48c613 (HEAD -> main, tag: v1.1.2) update readme
+14c94aa (tag: v1.1.1, origin/flask-test, flask-test) flask integration tests ok
+a8f1766 update readme
+fc10ec1 bug fix at regex
+12543e6 bug fix
+30c3a5f update codebuild.sh
+2443b79 update codebuild.sh
+1e717c0 codebuild added
+7eac419 docker ready
+22b599f (tag: v1.0.0) change port and host to 0.0.0.0:8000
+971594f unit tests
+45f5e4b flask api running
+b53c6f6 change from static to dynamic decorator
+b0267a1 minor fix
+0cee9fd replace function complete
+6d352dc Initial commit
+```
+
 ### Contact Information ###
 
 This program is designed and written by [Leia Renée](https://www.linkedin.com/in/leia-renee/) for the purpose of job interview by [TMNL](https://www.tmnl.nl/) in August 2021.
