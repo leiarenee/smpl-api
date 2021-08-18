@@ -3,18 +3,6 @@
 # Written by Leia Renée
 # Licence MIT
 #
-# Environment variables to be declared in .env
-#
-# PYTHONPATH=<pyrun_source_dir>:<pyrun_test_dir>:<other module folders if any>
-# pyrun_venv_dir=<virtual env folder>
-# pyrun_venv_python_version=<Python version>
-# pyrun_source_dir=<source folder>
-# pyrun_test_dir=<test folder>
-# pyrun_python_module=<module name>
-# pyrun_default_module_args=<module args>
-# pyrun_test_wildcard=<Ex: test_*.py>
-# pyrun_server_module=<server module>
-# ----------------------------------------
 
 # Stop on error
 set -e
@@ -28,7 +16,9 @@ function show_usage(){
   Script for easy running and testing '$pyrun_python_module' module
     Usage :
     - Install Virtual environment     $0 install
-    - Run Tests:                      $0 test
+    - Run All Tests:                  $0 test
+    - Run only unit tests             $0 unit
+    - Run only integration tests      $0 pytest
     - Run Server:                     $0 server
     - Run Applicaiton                 $0 app
     - Show Usage:                     $0 help  
@@ -70,11 +60,14 @@ function activate_virtual_env(){
 
 }
 
-# Function for running tests
-function run_tests(){
+# Function for running unit tests
+function run_unit_tests(){
+  echo
+  echo "Running Unit Tests with python unittest library."
+  echo "----------------------------------------------------------------------"
   IFS=$'\n'
-  tests=$(cd $pyrun_test_dir;ls $pyrun_test_wildcard | sed s/\.[^.]*$//g)
-  echo "Following tests are found in $pyrun_test_dir with pattern $pyrun_test_wildcard"
+  tests=$(cd $pyrun_unit_test_dir;ls $pyrun_unit_test_wildcard | sed s/\.[^.]*$//g)
+  echo "Following tests are found in $pyrun_unit_test_dir with pattern $pyrun_unit_test_wildcard"
   echo $tests
   echo
   for test in $tests
@@ -85,6 +78,25 @@ function run_tests(){
     echo
   done
   IFS=$' '
+}
+
+# Function for running unit tests
+function run_pytests(){
+  echo
+  echo "Running Integration tests with python pytest library."
+  pytest -v
+}
+
+# Function for running unit tests
+function run_tests(){
+  echo
+  echo "Starting tests"
+  run_unit_tests
+  run_pytests
+  if [ $? -eq 0 ]
+  then
+    echo "All Tests Passed Succesfully."
+  fi
 }
 
 # Function for calling python script with arguments
@@ -128,6 +140,10 @@ case $1 in
   show_usage;;
   "test")
   run_tests;;
+  "unit")
+  run_unit_tests;;
+  "pytest")
+  run_pytests;;
   "server")
   run_server;;
   "app")

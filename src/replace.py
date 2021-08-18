@@ -1,4 +1,5 @@
 
+import logging
 from typing import Dict, Any, List, Optional, NoReturn
 import library as lib
 import json, re
@@ -7,7 +8,6 @@ import json, re
 debug_mode = True
 interactive = False
 replace_data_file = 'replace_data.json'
-logger = None
 
 # Default log parameters
 log_params = {
@@ -17,7 +17,7 @@ log_params = {
   'format':'%(asctime)s:%(levelname)s:%(message)s',
   'encoding':'utf-8',
   'full_path_name':'',
-  'clean':{'remove':True, 'days':0,'seconds':0, 'quantity':10}
+  'clean':{'remove':True, 'days':0,'seconds':0, 'quantity':1}
 }
 
 def regexp_replace(search, replace, text):
@@ -58,7 +58,7 @@ def replace_function(text:str) -> Dict:
   else:
     return { 'result' : result}
 
-def event_handler(fnc, *args, **kwargs) -> Any:
+def event_handler(fnc, logger, *args, **kwargs) -> Any:
   """Initializes environment and calls the function with parameters
   Args:
     fnc (Function): Function to called.
@@ -70,13 +70,13 @@ def event_handler(fnc, *args, **kwargs) -> Any:
   Returns:
       result (Any): Result of function
   """
-  global logger
-  # Initialize logging
-  if not log_params['full_path_name']:
-    logger = lib.configure_logging(log_params)
-  logger.debug('Module Started.')
+
+  logger.debug(f'"{fnc.__module__}" Module Started.')
+
   result = lib.safe_run(fnc, log_params=log_params, debug_mode=debug_mode)(*args, **kwargs)
-  logger.debug('End of Main Routine.')
+
+  logger.debug(f'End of "{fnc.__module__}" Module main routine.')
+
   return result
 
 # Main routine to test the program in command line
@@ -85,10 +85,13 @@ if __name__ == '__main__':
   keyword = ''
   interactive = True
   
+  # Initialize logging
+  loger = lib.configure_logging(log_params)
+
   while keyword != 'q':
     keyword = input('Please Enter Keywod (q for exit) : ')
     if keyword != 'q':
-      result = event_handler(replace_function, keyword)
+      result = event_handler(replace_function, loger, keyword)
       if 'result' in result:
         print(result['result'])
     else:

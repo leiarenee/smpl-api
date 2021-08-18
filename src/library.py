@@ -19,7 +19,7 @@ log_params = {
 
 def safe_run(func=None, **dkwargs):
   global debug_mode, log_params
-
+  
   if func is None:
     return partial(safe_run, **dkwargs)
 
@@ -33,7 +33,7 @@ def safe_run(func=None, **dkwargs):
   @wraps(func)
   def wrapper(*args, **kwargs):
     
-    logging.debug(f'{func.__name__} function started with following paramaters: {args} {kwargs}')
+    logging.debug(f'{func.__module__}.{func.__name__} function started with following paramaters: {args} {kwargs}')
     start = timer()
     if debug_mode:
       result = func(*args, **kwargs)
@@ -44,7 +44,7 @@ def safe_run(func=None, **dkwargs):
         error_handling(err)
     end = timer()
     process_time = '{:.2f}'.format((end - start) * 1000)
-    logging.debug(f'{func.__name__} function ended in {process_time} milliseconds. returned {result}')
+    logging.debug(f'{func.__module__}.{func.__name__} function ended in {process_time} milliseconds. returned {result}')
     return result
 
   return wrapper

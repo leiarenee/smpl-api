@@ -122,21 +122,42 @@ To deactivate virtual environment:
 __Output:__
 
 ```sh
-Following tests are found in test with pattern test_*.py
-test_replace
+Starting tests
 
-Running test_replace
+Running Unit Tests with python unittest library.
+----------------------------------------------------------------------
+Following tests are found in test/unittest with pattern unit_test_*.py
+unit_test_replace
 
-test_event_handler (test_replace.Test_Replace) ... ok
-test_load_data_file (test_replace.Test_Replace) ... ok
-test_neglect_inwords (test_replace.Test_Replace) ... ok
-test_reverse_replacement (test_replace.Test_Replace) ... ok
-test_several_replacements (test_replace.Test_Replace) ... ok
+Running unit_test_replace
+
+test_event_handler (unit_test_replace.Test_Replace) ... ok
+test_load_data_file (unit_test_replace.Test_Replace) ... ok
+test_neglect_inwords (unit_test_replace.Test_Replace) ... ok
+test_reverse_replacement (unit_test_replace.Test_Replace) ... ok
+test_several_replacements (unit_test_replace.Test_Replace) ... ok
 
 ----------------------------------------------------------------------
-Ran 5 tests in 0.013s
+Ran 5 tests in 0.011s
 
 OK
 
+
+Running Integration tests with python pytest library.
+========================================================= test session starts =========================================================
+platform darwin -- Python 3.9.1, pytest-6.2.4, py-1.10.0, pluggy-0.13.1 -- /Users/leia/dev/tmnl/tmnl-app/venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/leia/dev/tmnl/tmnl-app
+collected 5 items                                                                                                                     
+
+test/pytest/test_flaskapi.py::test_api_route PASSED                                                                             [ 20%]
+test/pytest/test_flaskapi.py::test_authorization PASSED                                                                         [ 40%]
+test/pytest/test_flaskapi.py::test_replacement PASSED                                                                           [ 60%]
+test/pytest/test_flaskapi.py::test_key_error PASSED                                                                             [ 80%]
+test/pytest/test_flaskapi.py::test_json_error PASSED                                                                            [100%]
+
+========================================================== 5 passed in 0.38s ==========================================================
+All Tests Passed Succesfully.
 ```
+
 
