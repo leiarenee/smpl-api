@@ -13,6 +13,8 @@ import replace
 import library as lib
 from http import HTTPStatus
 import dotenv
+from aws_xray_sdk.core import xray_recorder
+from aws_xray_sdk.ext.flask.middleware import XRayMiddleware
 
 # Default log parameters
 log_params = {
@@ -24,8 +26,8 @@ log_params = {
   'full_path_name':'',
   'clean':{'remove':True, 'days':0,'seconds':0, 'quantity':1}
 }
-logger = lib.configure_logging(log_params)
-
+#logger = lib.configure_logging(log_params)
+logger = logging.getLogger()
 def handleError(err,return_code=500):
   http_status = HTTPStatus(return_code).phrase
   error_message = repr(err).replace("'",'')
@@ -101,6 +103,10 @@ if __name__ == '__main__':
   HOST = dotenv.get_key(env_file, 'HOST')
   PORT = dotenv.get_key(env_file, 'PORT')
   FLASK_DEBUG = dotenv.get_key(env_file, 'FLASK_DEBUG')
+  XRAY = dotenv.get_key(env_file,'XRAY')
   app = create_app()
+  if XRAY.lower == 'true':
+    xray_recorder.configure(service='Flask-API')
+    XRayMiddleware(app, xray_recorder)
   print (f'Server listens on {HOST}:{PORT}')
   app.run(host=HOST, port=PORT, debug=FLASK_DEBUG)
