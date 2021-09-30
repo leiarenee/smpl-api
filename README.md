@@ -143,9 +143,9 @@ OK
 
 Running Integration tests with python pytest library.
 ========================================================= test session starts =========================================================
-platform darwin -- Python 3.9.1, pytest-6.2.4, py-1.10.0, pluggy-0.13.1 -- /Users/leia/dev/tmnl/tmnl-app/venv/bin/python
+platform darwin -- Python 3.9.1, pytest-6.2.4, py-1.10.0, pluggy-0.13.1 -- /Users/leia/dev/smpl-api/venv/bin/python
 cachedir: .pytest_cache
-rootdir: /Users/leia/dev/tmnl/tmnl-app
+rootdir: /Users/leia/dev/smpl-api
 collected 5 items                                                                                                                     
 
 test/pytest/test_flaskapi.py::test_api_route PASSED                                                                             [ 20%]
@@ -369,7 +369,7 @@ Run:
 #### Manual Build Command ####
 
 ```sh
-docker build . -t tmnl-app --build-arg PYTHON_VERSION=3.9.5 --build-arg PYTHON_COMMAND=3.9
+docker build . -t smpl-api --build-arg PYTHON_VERSION=3.9.5 --build-arg PYTHON_COMMAND=3.9
 ```
 
 __Not__: Since `Python3.9` is not available as a yum package, source files are fetched from python.org ftp site, extracted, compiled and installed into container image during build time. Python version is passed into Docker Builder as an argument so that it can be changed easily from outside without changing docker file.
@@ -417,7 +417,7 @@ Run:
 Run:
 
 ```sh
-docker run -p 8000:8000 tmnl-api
+docker run -p 8000:8000 smpl-api
 ```
 
 ### Running Tests in Docker Container ###
@@ -430,7 +430,7 @@ Run:
 
 ## AWS Codebuild for remote docker builds ##
 
-[AWS Codebuild](https://aws.amazon.com/codebuild/) Service is used to build docker image remotely and deploy into [AWS Elastic Container Registry](https://aws.amazon.com/ecr/). `codebuild.sh` bash script file is executed codebuild machine. The settings are passed from [TMNL-Live](https://github.com/leiarenee/tmnl-live) github repository which is used by [Terragrunt](https://terragrunt.gruntwork.io/) and [Terraform](https://www.terraform.io/) to deploy infrastructure. See [TMNL-Live](https://github.com/leiarenee/tmnl-live) for more details.
+[AWS Codebuild](https://aws.amazon.com/codebuild/) Service is used to build docker image remotely and deploy into [AWS Elastic Container Registry](https://aws.amazon.com/ecr/). `codebuild.sh` bash script file is executed codebuild machine. The settings are passed from [TG-Live](https://github.com/leiarenee/tg-live) github repository which is used by [Terragrunt](https://terragrunt.gruntwork.io/) and [Terraform](https://www.terraform.io/) to deploy infrastructure. See [TG-Live](https://github.com/leiarenee/tg-live) for more details.
 
 ### Local test for codebuild ###
 
