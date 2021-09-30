@@ -93,8 +93,6 @@ To deactivate virtual environment:
     * `test_output.txt` Output text file used by unit test to compare results.
     * `test_replace_data.json` Json file used to extract sample data to be used in unit tests.
 * `doc` : Extra documentation
-  * `Assignment.md` md version of Assignment text.
-  * `Cloud Engineer Assignment TMNL August 21.pdf` Assignment text supplied by [TMNL](https://www.tmnl.nl/).
 * `log` : log files
 * `venv` : virtual environment (This directory is created on first use by running `./pyrun.sh install`)
   * `bin` Virtual environment binaries
