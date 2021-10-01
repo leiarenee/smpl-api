@@ -1,2 +1,2 @@
 #!/bin/bash
-docker run -p 8000:8000 tmnl-api $@
+docker run -p 8000:8000 smpl-api $@
