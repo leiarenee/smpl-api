@@ -68,7 +68,7 @@ function ecr_login {
 function ecr_static_account_login {
   echo -e "${GREEN}- Logging into ECR Static account ${NC}"
   echo
-  aws ecr get-login-password | docker login $AWS_ECR_STATIC_ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com -u AWS --password-stdin
+  aws ecr get-login-password | docker login $AWS_ECR_STATIC_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com -u AWS --password-stdin
   echo
 }
 
@@ -85,7 +85,7 @@ fi
 
 export IMAGE_TIMESTAMP=ts-$(date +"%Y%m%d-%H%M%S")
 
-export ECR_URL=$AWS_ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com
+export ECR_URL=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
 export IMAGE_REPO_URL=$ECR_URL/$IMAGE_REPO_NAME
 
 # Login to ECR
